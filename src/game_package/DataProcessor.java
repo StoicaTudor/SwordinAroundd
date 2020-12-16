@@ -1,5 +1,6 @@
 package game_package;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,9 +23,11 @@ public class DataProcessor {
 		}
 	}
 
-	private byte[] data;
 	private int currentDataIndex = 0;
 
+	private final int playerID;
+	private InetAddress serverAddress;
+	private int serverPort;
 	public int playerX = 100;
 	public int playerY = 100;
 
@@ -33,10 +36,13 @@ public class DataProcessor {
 
 	public List<Bullet> existingBullets;
 
-	public DataProcessor(byte[] data) {
+	public DataProcessor(int playerID, InetAddress serverAddress, int serverPort) {
 
-		this.data = data;
+		this.playerID = playerID;
 		this.currentDataIndex = 0;
+		
+		this.serverAddress = serverAddress;
+		this.serverPort = serverPort;
 	}
 
 	public void processData() {

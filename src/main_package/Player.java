@@ -14,7 +14,7 @@ public class Player {
 	private String password;
 	private int x;
 	private int y;
-	public int hoursPlayerd;
+	public int hoursPlayed;
 	public OnlineStatus status;
 	private ArrayList<Skin> skin;
 	private Skin activeSkin;
@@ -27,8 +27,8 @@ public class Player {
 		this.statistics = new HashSet<Pair<GameType, Statistics>>();
 
 		for (GameType gameType : GameType.values()) {
-			
-			this.statistics.add(new Pair(gameType,new Statistics()));
+
+			this.statistics.add(new Pair(gameType, new Statistics()));
 		}
 	}
 
@@ -46,5 +46,9 @@ public class Player {
 
 	public void removeFriend(Player player) {
 		friendsList.remove(player);
+	}
+
+	public int getPlayerID() {
+		return this.playerId;
 	}
 }
