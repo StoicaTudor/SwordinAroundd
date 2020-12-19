@@ -1,7 +1,5 @@
 package main_package;
 
-import javax.swing.JOptionPane;
-
 import network.Client;
 
 public class Menu {

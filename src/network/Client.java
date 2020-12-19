@@ -9,6 +9,8 @@ import java.net.UnknownHostException;
 
 import javax.swing.JOptionPane;
 
+import UI.ConnectionToLobbyAnimation;
+
 public class Client {
 
 	public enum Error {
@@ -16,14 +18,19 @@ public class Client {
 	}
 
 	private int playerID;
-	
+
 	private String serverIpAddress;
 	private int serverPort;
 	private InetAddress serverAddress;
 
 	private int lobbyPort;
 	private InetAddress lobbyAddress;
-	
+
+	private Thread listenThread;
+	private volatile boolean listening = false;
+	private final int MAX_PACKET_SIZE = 1024;
+	private byte[] receivedDataBuffer = new byte[MAX_PACKET_SIZE];
+
 	private Error errorCode = Error.NONE;
 
 	private DatagramSocket socket;
@@ -67,12 +74,11 @@ public class Client {
 
 		try {
 			/*
-			 *  the destination (server) is the same as the origin (client), 
-			 *  since I initially develop the program on the same pc
-			 *  localhost
+			 * the destination (server) is the same as the origin (client), since I
+			 * initially develop the program on the same pc localhost
 			 */
-			serverAddress = InetAddress.getByName(serverIpAddress); 
-			
+			serverAddress = InetAddress.getByName(serverIpAddress);
+
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 			errorCode = Error.INVALID_HOST;
@@ -89,24 +95,36 @@ public class Client {
 			return false;
 		}
 
+		listening = true;
+		listenThread = new Thread(() -> {
+			listen();
+		});
+		listenThread.start();
+
 		sendConnectionToLobbyPacket();
 		// wait for server to reply
-		// TODO - launch an animation FINDING AVAILABLE LOBBY and restricts the user from interacting with the app, as long as 
+		// TODO - launch an animation FINDING AVAILABLE LOBBY and restricts the user
+		// from interacting with the app, as long as
 		// the server receives the request and creates/finds a new lobby
-		// the address and the port of the lobby will be stored in 
-		//	private int lobbyPort;
+		// the address and the port of the lobby will be stored in
+		// private int lobbyPort;
 		// private InetAddress lobbyAddress;
-		JOptionPane.showMessageDialog(null, "Waiting for the server to respond...");
+		// JOptionPane.showMessageDialog(null, "Waiting for the server to respond...");
+		ConnectionToLobbyAnimation animation = new ConnectionToLobbyAnimation();
+		animation.setAnimationVisible(true);
 		return true;
 	}
 
 	private void sendConnectionToLobbyPacket() {
-		
-		// TODO - send a request to the server; the request will be intended to signal the server that the client requires to get
-		// an address and a port of an available lobby, so it could start the connection with the lobby
-		// the server will send the required data and from then on, the client will be able to send data to the lobby
-		
-		byte[] data = new StringBuilder().append("1 100 900 1 0 1 23").toString().getBytes();
+
+		// TODO - send a request to the server; the request will be intended to signal
+		// the server that the client requires to get
+		// an address and a port of an available lobby, so it could start the connection
+		// with the lobby
+		// the server will send the required data and from then on, the client will be
+		// able to send data to the lobby
+
+		byte[] data = new StringBuilder().append("3 1 STOP").toString().getBytes();
 		// byte[] data = this.playerID.toString().getBytes();
 
 		send(data);
@@ -115,7 +133,6 @@ public class Client {
 	private void send(byte[] data) {
 
 		assert (socket.isConnected());
-
 		DatagramPacket packet = new DatagramPacket(data, data.length, serverAddress, serverPort);
 		
 		try {
@@ -129,5 +146,30 @@ public class Client {
 	public Error getErrorCode() {
 
 		return this.errorCode;
+	}
+
+	private void listen() {
+
+		DatagramPacket packet;
+
+		while (listening) {
+
+			packet = new DatagramPacket(receivedDataBuffer, MAX_PACKET_SIZE);
+
+			try {
+				socket.receive(packet);
+				dumpPacket(packet);
+			} catch (IOException e) {
+
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void dumpPacket(DatagramPacket packet) {
+
+		System.out.println(packet.getAddress());
+		System.out.println(packet.getPort());
+		System.out.println(new String(packet.getData()));
 	}
 }
