@@ -11,7 +11,7 @@ public class Menu {
 	public static void main(String[] args) {
 
 		// new Menu();
-		for (int i = 0; i < 1; i++) {
+		for (int i = 0; i < 10; i++) {
 
 			Client client = new Client("localhost", 8192, i); // 64325
 			client.connect();

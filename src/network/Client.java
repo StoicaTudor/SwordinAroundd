@@ -35,6 +35,8 @@ public class Client {
 
 	private DatagramSocket socket;
 
+	ConnectionToLobbyAnimation animation;
+
 	/*
 	 * @param host ex. format: 192.168.1.1.5000
 	 */
@@ -68,6 +70,10 @@ public class Client {
 		this.serverIpAddress = serverIpAddress;
 		this.serverPort = serverPort;
 		this.playerID = playerID;
+	}
+
+	public int getPlayerID() {
+		return this.playerID;
 	}
 
 	public boolean connect() {
@@ -110,7 +116,7 @@ public class Client {
 		// private int lobbyPort;
 		// private InetAddress lobbyAddress;
 		// JOptionPane.showMessageDialog(null, "Waiting for the server to respond...");
-		ConnectionToLobbyAnimation animation = new ConnectionToLobbyAnimation();
+		animation = new ConnectionToLobbyAnimation();
 		animation.setAnimationVisible(true);
 		return true;
 	}
@@ -134,7 +140,7 @@ public class Client {
 
 		assert (socket.isConnected());
 		DatagramPacket packet = new DatagramPacket(data, data.length, serverAddress, serverPort);
-		
+
 		try {
 			socket.send(packet);
 		} catch (IOException e) {
@@ -158,6 +164,7 @@ public class Client {
 
 			try {
 				socket.receive(packet);
+				// closeConnectionToLobbyAnimationUponConnection(new String(packet.getData()));
 				dumpPacket(packet);
 			} catch (IOException e) {
 
@@ -170,6 +177,13 @@ public class Client {
 
 		System.out.println(packet.getAddress());
 		System.out.println(packet.getPort());
-		System.out.println(new String(packet.getData()));
+		System.out.println(new String(packet.getData()) + "\n");
+	}
+
+	private void closeConnectionToLobbyAnimationUponConnection(String data) {
+
+		if (data.startsWith("CONNECTED TO LOBBY")) {
+			animation.setAnimationVisible(false);
+		}
 	}
 }

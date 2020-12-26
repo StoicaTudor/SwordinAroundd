@@ -1,6 +1,7 @@
 package game_package;
 
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import main_package.Player;
 import network.Client;
@@ -20,17 +21,22 @@ public abstract class Game {
 
 		this.userPlayer = userPlayer;
 		this.client = new Client(serverAddress, serverPort, this.userPlayer.getPlayerID());
-		this.dataProcessor = new DataProcessor(userName); // we MUST have this, since this is going to convert our byte
-															// [] data packets to the server
+		
+		try {
+			this.dataProcessor = new DataProcessor(client.getPlayerID(), InetAddress.getByName(serverAddress), serverPort);
+		} catch (UnknownHostException e) {
+
+			e.printStackTrace();
+		}
+		// we MUST have this, since this is going to convert our byte [] data packets to
+		// the server
 	}
 
 	public void start() {
-		server.startGame();
 	}
 
 	public void end() {
 		dataProcessor.displayConclusion();
-		server.endGame();
 	}
 
 }

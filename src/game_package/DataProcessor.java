@@ -54,25 +54,28 @@ public class DataProcessor {
 
 	private void processPlayerCoordinates() {
 
-		this.playerX = this.data[this.currentDataIndex++];
-		this.playerY = this.data[this.currentDataIndex++];
+//		this.playerX = this.data[this.currentDataIndex++];
+//		this.playerY = this.data[this.currentDataIndex++];
 	}
 
 	private void processSwordAttack() {
 
-		this.swordAttackX = this.data[this.currentDataIndex++];
-		this.swordAttackY = this.data[this.currentDataIndex++];
+//		this.swordAttackX = this.data[this.currentDataIndex++];
+//		this.swordAttackY = this.data[this.currentDataIndex++];
 	}
 
 	private void processBulletsFired() {
 
-		existingBullets = new ArrayList<Bullet>();
-
-		while (this.currentDataIndex < this.data.length) {
-
-			this.existingBullets
-					.add(new Bullet(this.data[this.currentDataIndex++], this.data[this.currentDataIndex++]));
-		}
+//		existingBullets = new ArrayList<Bullet>();
+//
+//		while (this.currentDataIndex < this.data.length) {
+//
+//			this.existingBullets
+//					.add(new Bullet(this.data[this.currentDataIndex++], this.data[this.currentDataIndex++]));
+//		}
 	}
 
+	public void displayConclusion() {
+		
+	}
 }
