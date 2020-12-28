@@ -1,13 +1,9 @@
 package UI;
 
-import java.awt.EventQueue;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.Timer;
 
 public class ConnectionToLobbyAnimation {
 
@@ -75,9 +71,7 @@ public class ConnectionToLobbyAnimation {
 		frame.setVisible(visible);
 		
 		if(visible) {
-			animationTimer.start();
-		} else {
-			animationTimer.stop();
+			//Paint the image swing
 		}
 	}
 }
